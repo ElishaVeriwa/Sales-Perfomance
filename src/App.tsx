@@ -1,14 +1,27 @@
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, AreaChart, Area } from 'recharts';
+import { useState, useMemo } from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, AreaChart, Area, Treemap } from 'recharts';
 import { motion } from "motion/react";
 import { NotebookSection } from './components/NotebookSection';
 import { CodeSnippet } from './components/CodeSnippet';
-import { getAggregatedByRegion, getMonthlyTrends, salesData } from './services/dataService';
-import { Database, FileSpreadsheet, GitBranch, Github, Linkedin, Mail } from 'lucide-react';
-
-const regionData = getAggregatedByRegion();
-const trendData = getMonthlyTrends();
+import { GrowthSimulator } from './components/GrowthSimulator';
+import { CorrelationAnalysis } from './components/CorrelationAnalysis';
+import { KPIInsight } from './components/KPIInsight';
+import { getAggregatedByRegion, getMonthlyTrends, salesData, getCategoryBreakdown } from './services/dataService';
+import { Database, FileSpreadsheet, GitBranch, Github, Linkedin, Mail, Search, Info, PieChart as PieIcon } from 'lucide-react';
 
 export default function App() {
+  const [selectedCategory, setSelectedCategory] = useState<string | undefined>(undefined);
+  
+  const filteredSalesData = useMemo(() => {
+    return selectedCategory ? salesData.filter(d => d.category === selectedCategory) : salesData;
+  }, [selectedCategory]);
+
+  const regionData = useMemo(() => getAggregatedByRegion(selectedCategory), [selectedCategory]);
+  const trendData = useMemo(() => getMonthlyTrends(selectedCategory), [selectedCategory]);
+  const treemapData = useMemo(() => getCategoryBreakdown(), []);
+
+  const categories = ['Technology', 'Furniture', 'Office Supplies'];
+
   return (
     <div className="min-h-screen bg-bg selection:bg-accent selection:text-white">
       {/* Header / Portfolio Intro */}
@@ -85,12 +98,40 @@ export default function App() {
 
         {/* Step 02: Regional Distribution */}
         <NotebookSection step="02" title="Regional Distribution Analysis">
-          <p className="mb-6 text-neutral-600">
-            We aggregate sales performance across major geographical sectors to understand primary revenue drivers. 
-            Asia currently leads in volume, though North America maintains higher margins in Technology.
-          </p>
+          <div className="mb-8">
+            <KPIInsight data={filteredSalesData} />
+          </div>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <p className="text-neutral-600 max-w-xl">
+              We aggregate sales performance across major geographical sectors to understand primary revenue drivers. 
+              Asia currently leads in volume, though North America maintains higher margins in Technology.
+            </p>
+            <div className="flex flex-wrap gap-2 p-1 bg-neutral-100 rounded-lg border border-line">
+              <button 
+                onClick={() => setSelectedCategory(undefined)}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${!selectedCategory ? 'bg-white shadow-sm text-accent' : 'text-neutral-500 hover:text-ink'}`}
+              >
+                All Data
+              </button>
+              {categories.map(cat => (
+                <button 
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${selectedCategory === cat ? 'bg-white shadow-sm text-accent' : 'text-neutral-500 hover:text-ink'}`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </div>
           
-          <div className="h-[350px] w-full bg-white p-8 rounded-xl border border-line mb-8">
+          <div className="h-[350px] w-full bg-white p-8 rounded-xl border border-line mb-8 group relative">
+            <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex items-center gap-1.5 px-2 py-1 bg-ink text-white text-[10px] rounded">
+                    <Info size={10} />
+                    Live Dataset
+                </div>
+            </div>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={regionData}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
@@ -129,6 +170,60 @@ export default function App() {
               <div className="text-neutral-500 text-sm font-semibold mt-1">42% Net Revenue</div>
             </div>
           </div>
+        </NotebookSection>
+
+        {/* Step 02.5: Composition */}
+        <NotebookSection step="2.5" title="Category Composition Matrix">
+            <p className="mb-6 text-neutral-600">
+                A hierarchical view of revenue concentration. Technology dominates the bulk of the sales volume, 
+                with cross-regional sub-segments visualized below.
+            </p>
+            <div className="h-[400px] w-full bg-neutral-900 p-2 rounded-xl border border-neutral-800 overflow-hidden">
+                <ResponsiveContainer width="100%" height="100%">
+                    <Treemap
+                        data={treemapData}
+                        dataKey="size"
+                        aspectRatio={4 / 3}
+                        stroke="#fff"
+                        fill="#2563EB"
+                        content={(props: any) => {
+                            const { x, y, width, height, index, name } = props;
+                            return (
+                                <g>
+                                    <rect
+                                        x={x}
+                                        y={y}
+                                        width={width}
+                                        height={height}
+                                        style={{
+                                            fill: index % 2 === 0 ? '#1A1A1A' : '#2563EB',
+                                            stroke: '#fff',
+                                            strokeWidth: 2 / (index + 1),
+                                            strokeOpacity: 1,
+                                        }}
+                                    />
+                                    {width > 50 && height > 30 && (
+                                        <text
+                                            x={x + width / 2}
+                                            y={y + height / 2}
+                                            textAnchor="middle"
+                                            fill="#fff"
+                                            fontSize={12}
+                                            className="font-bold opacity-80 uppercase tracking-tighter"
+                                        >
+                                            {name}
+                                        </text>
+                                    )}
+                                </g>
+                            );
+                        }}
+                    />
+                </ResponsiveContainer>
+            </div>
+            <div className="mt-4 flex items-center gap-2 text-[10px] text-neutral-400 font-mono">
+                <PieIcon size={12} />
+                Interactive Treemap: Values represent Gross Sales Volume ($)
+            </div>
         </NotebookSection>
 
         {/* Step 03: Monthly Momentum */}
@@ -171,11 +266,13 @@ export default function App() {
           </div>
 
           <CodeSnippet code={`# Time Series forecasting for Q3\nsales_ts <- trendData %>% mutate(month = as.Date(paste0(date, "-01")))\nggplot(sales_ts, aes(x=month, y=sales)) + \n  geom_smooth(method="loess", se=FALSE, color="#2563EB")`} />
+          
+          <CorrelationAnalysis />
         </NotebookSection>
 
         {/* Step 04: Conclusion */}
         <NotebookSection step="04" title="Strategic Conclusions">
-          <div className="p-8 bg-neutral-900 text-white rounded-2xl relative overflow-hidden">
+          <div className="p-8 bg-neutral-900 text-white rounded-2xl relative overflow-hidden mb-12">
             <div className="absolute top-0 right-0 p-8 opacity-10">
               <FileSpreadsheet size={120} />
             </div>
@@ -199,14 +296,40 @@ export default function App() {
               <button className="px-6 py-3 bg-neutral-800 hover:bg-neutral-700 transition-colors rounded-lg font-semibold text-sm">View Raw Dataset</button>
             </div>
           </div>
+
+          <GrowthSimulator />
+          
+          <div className="mt-12 p-6 bg-accent/5 border border-accent/20 rounded-xl flex items-start gap-4">
+            <div className="p-2 bg-accent/10 rounded-lg text-accent">
+                <Search size={20} />
+            </div>
+            <div>
+                <h4 className="font-semibold text-accent mb-1">Deep Dive Strategy</h4>
+                <p className="text-sm text-neutral-600 leading-relaxed">
+                    Based on your interactive filtering and growth simulations, our data suggests focusing on the <strong>Asia/Pacific Technology</strong> corridor for the next fiscal year.
+                </p>
+            </div>
+          </div>
         </NotebookSection>
       </main>
 
       <footer className="py-20 border-t border-line text-center text-neutral-400 text-sm">
         <div className="max-w-4xl mx-auto px-6">
-          <div className="flex justify-center items-center gap-2 mb-4">
-            <GitBranch size={14} />
-            <span className="font-mono">branch: production - main</span>
+          <div className="flex flex-col items-center gap-4 mb-6">
+            <div className="flex gap-8">
+              <div className="text-left">
+                <p className="stat-label">Author</p>
+                <p className="text-ink font-semibold">Everiwa</p>
+              </div>
+              <div className="text-left">
+                <p className="stat-label">Maintainer</p>
+                <p className="text-ink font-semibold">Everiwa Analytics</p>
+              </div>
+            </div>
+            <div className="flex justify-center items-center gap-2">
+              <GitBranch size={14} />
+              <span className="font-mono">branch: production - main</span>
+            </div>
           </div>
           <p>© 2026 SalesInsight Analytics Portfolio. Built with React, Recharts & R Methodology.</p>
         </div>
