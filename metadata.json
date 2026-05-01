@@ -1,6 +1,6 @@
 {
-  "name": "Sales Insight Notebook",
-  "description": "An interactive R-style analytics portfolio documenting a deep dive into global sales data and performance metrics.",
+  "name": "Venzmart Sales Analytics",
+  "description": "Interactive sales performance and profitability analysis for Venzmart Retail Division, a leading Zimbabwean enterprise.",
   "requestFramePermissions": [],
   "majorCapabilities": []
 }

@@ -5,6 +5,7 @@ import { NotebookSection } from './components/NotebookSection';
 import { CodeSnippet } from './components/CodeSnippet';
 import { GrowthSimulator } from './components/GrowthSimulator';
 import { CorrelationAnalysis } from './components/CorrelationAnalysis';
+import { AdvancedMarketScatter } from './components/AdvancedMarketScatter';
 import { KPIInsight } from './components/KPIInsight';
 import { getAggregatedByRegion, getMonthlyTrends, salesData, getCategoryBreakdown } from './services/dataService';
 import { Database, FileSpreadsheet, GitBranch, Github, Linkedin, Mail, Search, Info, PieChart as PieIcon } from 'lucide-react';
@@ -28,12 +29,12 @@ export default function App() {
       <header className="border-b border-line bg-white/50 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-4xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-ink rounded-lg flex items-center justify-center text-white font-display italic text-xl">
-              S
+            <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center text-white font-display italic text-xl shadow-lg shadow-accent/20">
+              V
             </div>
             <div>
-              <h1 className="font-semibold text-sm">SaleInsight Portfolio</h1>
-              <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-mono">Ver: 2.0.4 - STABLE</p>
+              <h1 className="font-semibold text-sm">Venzmart Analytics</h1>
+              <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-mono">Retail Division - Zimbabwe</p>
             </div>
           </div>
           <nav className="flex items-center gap-6">
@@ -54,16 +55,15 @@ export default function App() {
         >
           <div className="flex items-center gap-2 mb-4 text-accent font-mono text-xs font-semibold uppercase tracking-widest">
             <Database size={14} />
-            Data Science Project Portfolio
+            Venzmart Retail Analytics Portfolio
           </div>
           <h1 className="text-5xl font-bold tracking-tight mb-8">
-            Global Sales Ecosystem: <br />
+            Zimbabwean Retail Landscape: <br />
             <span className="text-neutral-400 font-display italic">Performance & Profitability</span>
           </h1>
           <p className="text-xl text-neutral-600 leading-relaxed max-w-2xl">
-            A comprehensive exploratory data analysis (EDA) using high-fidelity sales logs. 
-            This notebook documents the methodologies used to identify high-growth regions 
-            and seasonal volatility.
+            A deep-dive analysis into Venzmart's retail performance across Zimbabwe's provinces. 
+            Identifying high-growth hubs and supply chain efficiency indicators.
           </p>
         </motion.div>
 
@@ -97,14 +97,14 @@ export default function App() {
         </NotebookSection>
 
         {/* Step 02: Regional Distribution */}
-        <NotebookSection step="02" title="Regional Distribution Analysis">
+        <NotebookSection step="02" title="Provincial Distribution Analysis">
           <div className="mb-8">
             <KPIInsight data={filteredSalesData} />
           </div>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
             <p className="text-neutral-600 max-w-xl">
-              We aggregate sales performance across major geographical sectors to understand primary revenue drivers. 
-              Asia currently leads in volume, though North America maintains higher margins in Technology.
+              Mapping sales performance across Zimbabwe provinces and metro areas. 
+              Harare Central continues to lead in technology procurement, while Bulawayo shows steady furniture growth.
             </p>
             <div className="flex flex-wrap gap-2 p-1 bg-neutral-100 rounded-lg border border-line">
               <button 
@@ -161,13 +161,13 @@ export default function App() {
           <div className="grid grid-cols-2 gap-4">
             <div className="p-6 bg-white border border-line rounded-xl">
               <div className="stat-label">Highest Growth</div>
-              <div className="text-3xl font-bold">Asia Pacific</div>
-              <div className="text-emerald-500 text-sm font-semibold mt-1">↑ 14.2% YoY</div>
+              <div className="text-3xl font-bold">Harare CBD</div>
+              <div className="text-emerald-500 text-sm font-semibold mt-1">↑ 18.4% YoY</div>
             </div>
             <div className="p-6 bg-white border border-line rounded-xl">
-              <div className="stat-label">Market Leader</div>
-              <div className="text-3xl font-bold">North America</div>
-              <div className="text-neutral-500 text-sm font-semibold mt-1">42% Net Revenue</div>
+              <div className="stat-label">Volume Leader</div>
+              <div className="text-3xl font-bold">Bulawayo Metro</div>
+              <div className="text-neutral-500 text-sm font-semibold mt-1">31% Total Revenue</div>
             </div>
           </div>
         </NotebookSection>
@@ -202,16 +202,16 @@ export default function App() {
                                             strokeOpacity: 1,
                                         }}
                                     />
-                                    {width > 50 && height > 30 && (
+                                    {width > 50 && height > 40 && (
                                         <text
                                             x={x + width / 2}
                                             y={y + height / 2}
                                             textAnchor="middle"
                                             fill="#fff"
-                                            fontSize={12}
-                                            className="font-bold opacity-80 uppercase tracking-tighter"
+                                            className="font-bold opacity-90 uppercase tracking-tighter"
                                         >
-                                            {name}
+                                            <tspan x={x + width / 2} dy="-0.5em" fontSize={12}>{name}</tspan>
+                                            <tspan x={x + width / 2} dy="1.2em" fontSize={10} opacity={0.7}>${(props.size / 1000).toFixed(1)}k</tspan>
                                         </text>
                                     )}
                                 </g>
@@ -270,6 +270,15 @@ export default function App() {
           <CorrelationAnalysis />
         </NotebookSection>
 
+        {/* Step 03.5: Market Maturity */}
+        <NotebookSection step="3.5" title="Market Maturity Matrix">
+          <p className="mb-6 text-neutral-600">
+            By mapping profit margins against sales volume, we can categorize our market presence into four distinct quadrants. 
+            This advanced view highlights which regions are 'Cash Cows' (high margin/high volume) versus 'Rising Stars'.
+          </p>
+          <AdvancedMarketScatter />
+        </NotebookSection>
+
         {/* Step 04: Conclusion */}
         <NotebookSection step="04" title="Strategic Conclusions">
           <div className="p-8 bg-neutral-900 text-white rounded-2xl relative overflow-hidden mb-12">
@@ -306,7 +315,7 @@ export default function App() {
             <div>
                 <h4 className="font-semibold text-accent mb-1">Deep Dive Strategy</h4>
                 <p className="text-sm text-neutral-600 leading-relaxed">
-                    Based on your interactive filtering and growth simulations, our data suggests focusing on the <strong>Asia/Pacific Technology</strong> corridor for the next fiscal year.
+                    Based on your interactive filtering and growth simulations, our data suggests focusing on the <strong>Harare-Bulawayo corridor</strong> for the next retail expansion phase.
                 </p>
             </div>
           </div>
