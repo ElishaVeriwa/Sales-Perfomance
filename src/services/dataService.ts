@@ -1,72 +1,50 @@
-export interface SalesRecord {
+export interface SoftwareMetric {
   id: string;
-  region: string;
-  category: string;
-  sales: number;
-  profit: number;
-  date: string;
+  industry: string;
+  category: 'Accounting' | 'Data Management' | 'Productivity';
+  software: string;
+  usageHours: number; // Avg hours per week in typical office
+  efficiencyScore: number; // 0-100 scale
+  lastUpdate: string;
 }
 
-export const salesData: SalesRecord[] = [
-  { id: '1', region: 'Harare Central', category: 'Technology', sales: 45000, profit: 12100, date: '2025-01-15' },
-  { id: '2', region: 'Bulawayo Metro', category: 'Technology', sales: 38000, profit: 9500, date: '2025-01-20' },
-  { id: '3', region: 'Harare CBD', category: 'Technology', sales: 52000, profit: 15600, date: '2025-02-05' },
-  { id: '4', region: 'Midlands', category: 'Furniture', sales: 28000, profit: 4200, date: '2025-02-10' },
-  { id: '5', region: 'Manicaland', category: 'Furniture', sales: 31000, profit: 5580, date: '2025-02-18' },
-  { id: '6', region: 'Masvingo', category: 'Furniture', sales: 25000, profit: 3200, date: '2025-03-01' },
-  { id: '7', region: 'Harare North', category: 'Office Supplies', sales: 15000, profit: 6000, date: '2025-03-12' },
-  { id: '8', region: 'Bulawayo East', category: 'Office Supplies', sales: 18000, profit: 7560, date: '2025-03-20' },
-  { id: '9', region: 'Harare West', category: 'Office Supplies', sales: 22000, profit: 9240, date: '2025-04-05' },
-  { id: '10', region: 'Mashonaland', category: 'Technology', sales: 42000, profit: 11000, date: '2025-04-12' },
-  { id: '11', region: 'Matabeleland', category: 'Technology', sales: 61000, profit: 18000, date: '2025-04-20' },
-  { id: '12', region: 'Harare South', category: 'Furniture', sales: 35000, profit: 7000, date: '2025-04-28' },
+export const softwareUsageData: SoftwareMetric[] = [
+  { id: '1', industry: 'Finance', category: 'Accounting', software: 'Sage Pastel/200', usageHours: 40, efficiencyScore: 85, lastUpdate: '2026-01-15' },
+  { id: '2', industry: 'Mining', category: 'Accounting', software: 'SAP ERP', usageHours: 35, efficiencyScore: 92, lastUpdate: '2026-01-20' },
+  { id: '3', industry: 'Retail', category: 'Accounting', software: 'QuickBooks', usageHours: 25, efficiencyScore: 78, lastUpdate: '2026-02-05' },
+  { id: '4', industry: 'Agriculture', category: 'Data Management', software: 'Excel (Advanced)', usageHours: 45, efficiencyScore: 95, lastUpdate: '2026-02-10' },
+  { id: '5', industry: 'Public Sector', category: 'Productivity', software: 'Microsoft 365', usageHours: 30, efficiencyScore: 70, lastUpdate: '2026-02-18' },
+  { id: '6', industry: 'Finance', category: 'Data Management', software: 'Power BI', usageHours: 20, efficiencyScore: 88, lastUpdate: '2026-03-01' },
+  { id: '7', industry: 'Production', category: 'Accounting', software: 'Xero', usageHours: 15, efficiencyScore: 82, lastUpdate: '2026-03-12' },
+  { id: '8', industry: 'Consultancy', category: 'Data Management', software: 'SQL/Access', usageHours: 18, efficiencyScore: 90, lastUpdate: '2026-03-20' },
+  { id: '9', industry: 'Harare Corporate', category: 'Productivity', software: 'MS Teams/Zoom', usageHours: 12, efficiencyScore: 65, lastUpdate: '2026-04-05' },
+  { id: '10', industry: 'Telecommunications', category: 'Accounting', software: 'Oracle Financials', usageHours: 38, efficiencyScore: 94, lastUpdate: '2026-04-12' },
+  { id: '11', industry: 'Manufacturing', category: 'Data Management', software: 'Tableau', usageHours: 15, efficiencyScore: 80, lastUpdate: '2026-04-20' },
+  { id: '12', industry: 'NGOs', category: 'Accounting', software: 'Serenic Navigator', usageHours: 32, efficiencyScore: 86, lastUpdate: '2026-04-28' },
 ];
 
-export const getCategoryBreakdown = () => {
+export const getUsageByCategory = () => {
   const cats: Record<string, { size: number; children: { name: string; size: number }[] }> = {};
-  salesData.forEach(item => {
+  softwareUsageData.forEach(item => {
     if (!cats[item.category]) cats[item.category] = { size: 0, children: [] };
-    cats[item.category].size += item.sales;
-    const regionIdx = cats[item.category].children.findIndex(c => c.name === item.region);
-    if (regionIdx === -1) {
-      cats[item.category].children.push({ name: item.region, size: item.sales });
+    cats[item.category].size += item.usageHours;
+    const softwareIdx = cats[item.category].children.findIndex(c => c.name === item.software);
+    if (softwareIdx === -1) {
+      cats[item.category].children.push({ name: item.software, size: item.usageHours });
     } else {
-      cats[item.category].children[regionIdx].size += item.sales;
+      cats[item.category].children[softwareIdx].size += item.usageHours;
     }
   });
   return Object.entries(cats).map(([name, data]) => ({ name, ...data }));
 };
 
-export const getMarketMaturityData = () => {
-  return salesData.map(item => ({
-    name: `${item.region} - ${item.category}`,
-    sales: item.sales,
-    margin: (item.profit / item.sales) * 100,
-    profit: item.profit,
-    category: item.category,
-    region: item.region
-  }));
-};
-
-export const getAggregatedByRegion = (category?: string) => {
-  const regions: Record<string, { sales: number; profit: number }> = {};
-  salesData.forEach(item => {
+export const getIndustryBenchmarks = (category?: string) => {
+  const industries: Record<string, { usageHours: number; efficiencyScore: number }> = {};
+  softwareUsageData.forEach(item => {
     if (category && item.category !== category) return;
-    if (!regions[item.region]) regions[item.region] = { sales: 0, profit: 0 };
-    regions[item.region].sales += item.sales;
-    regions[item.region].profit += item.profit;
+    if (!industries[item.industry]) industries[item.industry] = { usageHours: 0, efficiencyScore: 0 };
+    industries[item.industry].usageHours += item.usageHours;
+    industries[item.industry].efficiencyScore = Math.max(industries[item.industry].efficiencyScore, item.efficiencyScore);
   });
-  return Object.entries(regions).map(([name, data]) => ({ name, ...data }));
-};
-
-export const getMonthlyTrends = (category?: string) => {
-  const months: Record<string, { sales: number; profit: number }> = {};
-  salesData.forEach(item => {
-    if (category && item.category !== category) return;
-    const month = item.date.substring(0, 7);
-    if (!months[month]) months[month] = { sales: 0, profit: 0 };
-    months[month].sales += item.sales;
-    months[month].profit += item.profit;
-  });
-  return Object.entries(months).map(([date, data]) => ({ date, ...data })).sort((a, b) => a.date.localeCompare(b.date));
+  return Object.entries(industries).map(([name, data]) => ({ name, ...data }));
 };

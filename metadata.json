@@ -1,6 +1,6 @@
 {
-  "name": "Venzmart Sales Analytics",
-  "description": "Interactive sales performance and profitability analysis for Venzmart Retail Division, a leading Zimbabwean enterprise.",
+  "name": "PetMind Subscription Analysis",
+  "description": "Data analysis project for the DataCamp Associate Data Analyst exam, focusing on repeat purchase impacts for PetMind retail data.",
   "requestFramePermissions": [],
   "majorCapabilities": []
 }
