@@ -1,9 +1,9 @@
-# PetMind: Pet Box Subscription Analysis
+# PetMind - Pet Box Subscription Analysis
 ## DataCamp Associate Data Analyst Certification Exam
 
 ![DataCamp Certification](https://github.com/ElishaVeriwa/datacamp_certified_data_analyst_associate/blob/main/Certification.jpg)
 
-### 🎯 Analysis Goals & Objectives
+### 🎯 Analysis Goals and Objectives
 The project is structured around four primary research objectives to satisfy the certification requirements:
 1. **Data Governance**: Validating all 1,500 records against the data schema, handling missing values, and ensuring data type consistency across all 8 variables.
 2. **Class Balance Assessment**: Evaluating the distribution of 'Repeat Purchases' to determine if the subscription-focused strategy has significant market penetration.
@@ -12,8 +12,8 @@ The project is structured around four primary research objectives to satisfy the
 
 ### 📈 Project Workflow
 - **Exploration**: Initial assessment of data health and identifying discrepancies between raw input and the target data dictionary.
-- **Cleaning**: Applying systematic corrections to categorical and numeric fields (e.g., standardizing 'category' labels and imputing price medians).
-- **Visualization**: Utilizing React-based charts (Recharts) to visualize distributions and correlations.
+- **Cleaning**: Applying systematic corrections to categorical and numeric fields (e.g., standardising 'category' labels and imputing price medians).
+- **Visualization**: Utilising React-based charts (Recharts) to visualize distributions and correlations.
 - **Interpretation**: Drawing actionable insights for PetMind's marketing and inventory departments.
 
 ### 🗂️ Dataset Insights
@@ -21,7 +21,7 @@ The dataset comprises 1,500 records across 8 key variables. A detailed data dict
 
 ### 🛠️ Technical Implementation Roadmap
 
-#### Phase 1: Data Integrity & Quality Governance
+#### Phase 1: Data Integrity and Quality Governance
 Conducting a comprehensive audit of all categorical and numeric variables to ensure alignment with the data dictionary.
 - **Validation**: Verifying entries in `category`, `animal`, and `size`.
 - **Null Management**: Identifying and systematically addressing missing data in `price` and `rating` variables.
@@ -39,4 +39,4 @@ This project was completed as part of the requirements for the **DataCamp Associ
 ![Author's DataCamp Data Analyst Associate Certification](https://github.com/ElishaVeriwa/datacamp_certified_data_analyst_associate/blob/main/Certification.jpg)
 
 ---
-📦 *Developed by Elisha Veriwa for the DataCamp Professional Certification Exam.*
+📦 *Developed by Elisha Veriwa to present the DataCamp Professional Certification Exam dynamics overview.*
